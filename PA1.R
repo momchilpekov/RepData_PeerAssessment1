@@ -1,51 +1,36 @@
-# Reproducible Research: Peer Assessment 1
-
-
-## Loading and preprocessing the data
-
-```{r}
 conn="activity.zip"
 data <- read.csv(unz(conn, "activity.csv"), header=TRUE ,sep=",")
 # Dates as dates
 data$date <- as.Date(data$date, "%Y-%m-%d")
 dataSum<-aggregate(steps~date, data=data, sum)
+#histogram of steps by days
 hist(dataSum$steps)
-
-```
-
 ## What is mean total number of steps taken per day?
-
-Steps mean
-```{r}
+# mean
 mean(dataSum$steps)
-````
 
-Steps median
-
-```{r}
+#median
 median(dataSum$steps)
-````
-
 
 ## What is the average daily activity pattern?
 
-```{r}
 dataSum<-aggregate(steps~interval, data=data, mean)
 averageAllDays<-mean(data$steps, na.rm=T)
 
 plot( dataSum$interval,dataSum$steps, type="l")
 title("steps averaged by dates")
-```
 
-interval with largest averaged steps 
-```{r}
+#interval with largest averaged steps 
 dataSum$interval[which.?max(dataSum$steps)]
-```
-## Imputing missing values
-Number of NAs
-```{r}
+
+#number of NAs
 sum(is.na(data))
-```
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+f<-function(d,dataSum){
+        if d$steps==NA{
+                d$steps<-dataSum[dataSum$interval==d$interval, ]$steps
+        }
+}
+
+lapply(data, f)
